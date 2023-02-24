@@ -1,11 +1,3 @@
-from .sampling.grid import (
-    squared_grid,
-    hexagonal_grid,
-    upload_to_ee,
-    save_locally,
-    plot_samples,
-)
-
 from .ee.extract_time_series import extract_time_series
 from .ee.util import processing_grid, get_random_point, get_center_point, set_id
 from .ee.landsat.landsat_collection import landsat_collection
@@ -24,5 +16,15 @@ from .ts_analysis.helpers import (
     remove_outliers,
     plot_stats_per_class,
 )
+from .sampling.grid import (
+    squared_grid,
+    hexagonal_grid,
+    upload_to_ee,
+    save_locally,
+    plot_samples,
+)
 
 from .get_change_data import get_change_data
+
+__version__ = "0.0.0"
+__author__ = "FAO"

@@ -24,9 +24,9 @@ keywords = ["MRV", "SBAE", "Activity Data",
 ]
 authors = [
     {name= "Andreas Vollrath", email="adreas.vollrath@fao.org"},
-    {name= "Daniel Guerrero Machado", email=""},
-    {name="Pierrick Rambaud", email=""},
-    {name="Remi D'Annunzio", email=""},
+    {name= "Daniel Guerrero Machado", email="daniel.guerreromachado@fao.org"},
+    {name="Pierrick Rambaud", email="pierrick.rambaud@fao.org"},
+    {name="Remi D'Annunzio", email="remi.dannunzio@fao.org"},
 ]
 dependencies = [
     # web
@@ -42,11 +42,11 @@ dependencies = [
     "numpy==1.22",
     "pandas",
     "scipy",
-    "sklearn",
+    "scikit-learn",
     "imbalanced-learn",
     "matplotlib",
     "seaborn",
-    "tensorflow==2.7.0",
+    "tensorflow>=2.7.0",
     "protobuf==3.19.6",
     # time-series
     "nrt",
@@ -64,14 +64,18 @@ content-type = "text/x-rst"
 repository = "https://github.com/sepal-contrib/eSBAE"
 
 [project.optional-dependencies]
-dev = ["pre-commit"]
+dev = ["pre-commit", "nox"]
 test = []
-doc = []
+doc = ["sphinx", "pydata-sphinx-theme==0.13.0rc3", "sphinx-design"]
 
 [tool.setuptools]
 include-package-data = true
 license-files = ["LICENSE"]
-packages = ["e_sbae"]
+#packages = ["e_sbae"]
+
+[tool.setuptools.packages.find]
+where = ["e_sbae"]  # list of folders that contain the packages (["."] by default)
+include = ["e_sbae*"]  # package names should match these glob patterns (["*"] by default)
 
 [tool.ruff]
 ignore-init-module-imports = true
