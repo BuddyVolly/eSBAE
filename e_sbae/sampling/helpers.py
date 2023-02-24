@@ -4,6 +4,7 @@ import shlex
 import time
 from datetime import timedelta
 
+
 def run_command(command, logfile=None, elapsed=True):
     """
 
@@ -33,7 +34,6 @@ def run_command(command, logfile=None, elapsed=True):
     return process.returncode
 
 
-
 def timer(start):
     """A helper function to print a time elapsed statement
 
@@ -44,5 +44,5 @@ def timer(start):
     """
 
     elapsed = time.time() - start
-    #logger.debug(f"Time elapsed: {timedelta(seconds=elapsed)}")
+    # logger.debug(f"Time elapsed: {timedelta(seconds=elapsed)}")
     print(f"Time elapsed: {timedelta(seconds=elapsed)}")

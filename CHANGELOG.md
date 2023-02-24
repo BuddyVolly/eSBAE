@@ -7,6 +7,3 @@
 - date of the time-series are stored as simple list of integeres (YYYMMDD format) instead of DateTimeIndex. That make sit possible to store the file as json, and overcomes problems with pickle because of different versions
 
 - sample size calculation now includes both, theoretical sampling error based on Cochran, and a simulated error on bias and precision base on global GFC data. Todos are here to integrate the envisaged plot size
-
-
-
