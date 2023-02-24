@@ -64,7 +64,7 @@ content-type = "text/x-rst"
 repository = "https://github.com/sepal-contrib/eSBAE"
 
 [project.optional-dependencies]
-dev = ["pre-commit", "nox"]
+dev = ["pre-commit", "nox", "mypy"]
 test = ["pytest", "pytest-cov"]
 doc = ["sphinx", "pydata-sphinx-theme==0.13.0rc3", "sphinx-design"]
 
@@ -94,3 +94,10 @@ convention = "google"
 
 [tool.coverage.run]
 source = ["sphinxcontrib.icon"]
+
+[tool.mypy]
+scripts_are_modules = true
+ignore_missing_imports = true
+install_types = true
+non_interactive = true
+warn_redundant_casts = true
