@@ -1,0 +1,74 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e-sbae"
+version = "0.0.0"
+description = "High-level functionality for the creation of high integrity MRV data"
+requires-python = ">=3.6.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+keywords = ["MRV", "SBAE", "Activity Data",
+              "REDD+", "Remote Sensing", "Time-series",
+              "High Integrity"
+]
+authors = [
+    {name= "Andreas Vollrath", email="adreas.vollrath@fao.org"},
+    {name= "Daniel Guerrero Machado", email=""},
+    {name="Pierrick Rambaud", email=""},
+    {name="Remi D'Annunzio", email=""},
+]
+dependencies = [
+    # web
+    "requests",
+    "retrying",
+    # geospatial libs
+    "earthengine-api",
+    "xarray",
+    "geopandas",
+    "dask-geopandas",
+    "geemap",
+    # data science and ML
+    "numpy==1.22",
+    "pandas",
+    "scipy",
+    "sklearn",
+    "imbalanced-learn",
+    "matplotlib",
+    "seaborn",
+    "tensorflow==2.7.0",
+    "protobuf==3.19.6",
+    # time-series
+    "nrt",
+    #git+https://github.com/12rambau/bfast
+]
+
+[project.license]
+text = "MIT License"
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+repository = "https://github.com/sepal-contrib/eSBAE"
+
+[project.optional-dependencies]
+dev = []
+test = []
+doc = []
+
+[tool.setuptools]
+include-package-data = true
+license-files = ["LICENSE"]
+packages = ["e_sbae"]
