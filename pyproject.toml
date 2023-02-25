@@ -1,0 +1,103 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e-sbae"
+version = "0.0.0"
+description = "High-level functionality for the creation of high integrity MRV data"
+requires-python = ">=3.6.9"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+]
+keywords = ["MRV", "SBAE", "Activity Data",
+              "REDD+", "Remote Sensing", "Time-series",
+              "High Integrity"
+]
+authors = [
+    {name= "Andreas Vollrath", email="adreas.vollrath@fao.org"},
+    {name= "Daniel Guerrero Machado", email="daniel.guerreromachado@fao.org"},
+    {name="Pierrick Rambaud", email="pierrick.rambaud@fao.org"},
+    {name="Remi D'Annunzio", email="remi.dannunzio@fao.org"},
+]
+dependencies = [
+    # web
+    "requests",
+    "retrying",
+    # geospatial libs
+    "earthengine-api",
+    "xarray",
+    "geopandas",
+    "dask-geopandas",
+    "geemap",
+    # data science and ML
+    "numpy==1.22",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "imbalanced-learn",
+    "matplotlib",
+    "seaborn",
+    "tensorflow>=2.7.0",
+    "protobuf==3.19.6",
+    # time-series
+    "nrt",
+    #git+https://github.com/12rambau/bfast
+]
+
+[project.license]
+text = "MIT License"
+
+[project.readme]
+file = "README.rst"
+content-type = "text/x-rst"
+
+[project.urls]
+repository = "https://github.com/sepal-contrib/eSBAE"
+
+[project.optional-dependencies]
+dev = ["pre-commit", "nox", "mypy"]
+test = ["pytest", "pytest-cov"]
+doc = ["sphinx", "pydata-sphinx-theme==0.13.0rc3", "sphinx-design"]
+
+[tool.setuptools]
+include-package-data = true
+license-files = ["LICENSE"]
+#packages = ["e_sbae"]
+
+[tool.setuptools.packages.find]
+where = ["e_sbae"]  # list of folders that contain the packages (["."] by default)
+include = ["e_sbae*"]  # package names should match these glob patterns (["*"] by default)
+
+[tool.ruff]
+ignore-init-module-imports = true
+fix = true
+select = [] #["E", "F", "W", "I", "D", "RUF"]
+ignore = ["E501"]  # line too long | Black take care of it
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.per-file-ignores]
+"setup.py" = ["D100"] # nothing to see there
+
+[tool.coverage.run]
+source = ["sphinxcontrib.icon"]
+
+[tool.mypy]
+scripts_are_modules = true
+ignore_missing_imports = true
+install_types = true
+non_interactive = true
+warn_redundant_casts = true
