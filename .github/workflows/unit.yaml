@@ -40,8 +40,8 @@ jobs:
       - name: test with pytest
         run: pytest --color=yes --cov --cov-report=xml tests
 
-      - name: coverage
-        run: coverage xml
+      #- name: coverage
+      #  run: coverage xml
 
       #- name: codecov
       #  uses: codecov/codecov-action@v3
