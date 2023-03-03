@@ -23,15 +23,15 @@ keywords = ["MRV", "SBAE", "Activity Data",
               "High Integrity"
 ]
 authors = [
-    {name= "Andreas Vollrath", email="adreas.vollrath@fao.org"},
-    {name= "Daniel Guerrero Machado", email="daniel.guerreromachado@fao.org"},
+    {name="Andreas Vollrath", email="adreas.vollrath@fao.org"},
+    {name="Daniel Guerrero Machado", email="daniel.guerreromachado@fao.org"},
     {name="Pierrick Rambaud", email="pierrick.rambaud@fao.org"},
     {name="Remi D'Annunzio", email="remi.dannunzio@fao.org"},
 ]
 dependencies = [
     # web
     "requests",
-    "retrying",
+    "retry",
     # geospatial libs
     "earthengine-api",
     "xarray",
@@ -50,7 +50,7 @@ dependencies = [
     "protobuf==3.19.6",
     # time-series
     "nrt",
-    #git+https://github.com/12rambau/bfast
+    "git+https://github.com/12rambau/bfast"
 ]
 
 [project.license]
