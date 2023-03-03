@@ -42,6 +42,7 @@ dependencies = [
     "pandas",
     "scipy",
     "scikit-learn",
+    "scikit-optimize",
     "imbalanced-learn",
     "matplotlib",
     "seaborn",
