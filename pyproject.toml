@@ -33,6 +33,7 @@ dependencies = [
     "retry",
     # geospatial libs
     "earthengine-api",
+    #"git+https://github.com/BuddyVolly/eeHelpers",
     "xarray",
     "geopandas",
     "dask-geopandas",
@@ -50,7 +51,7 @@ dependencies = [
     "protobuf==3.19.6",
     # time-series
     "nrt",
-    "git+https://github.com/12rambau/bfast"
+    #"git+https://github.com/12rambau/bfast"
 ]
 
 [project.license]

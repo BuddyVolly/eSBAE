@@ -1,7 +1,5 @@
-import pandas as pd
-import geopandas as gpd
-import dask_geopandas as dgpd
 import numpy as np
+import dask_geopandas as dgpd
 
 
 def sfc_subsample(gdf, target_point_size, seed=None):

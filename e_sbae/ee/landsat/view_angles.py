@@ -1,38 +1,38 @@
 import ee
-from ..util import *
+from e_sbae.helpers.ee import *
 
 MAX_DISTANCE = 1000000
 
 
 def create(footprint):
-    return (azimuth(footprint), zenith(footprint))
+    return azimuth(footprint), zenith(footprint)
 
 
 def azimuth(footprint):
-    upperCenter = (
+    upper_center = (
         line_from_coords(footprint, UPPER_LEFT, UPPER_RIGHT).centroid().coordinates()
     )
-    lowerCenter = (
+    lower_center = (
         line_from_coords(footprint, LOWER_LEFT, LOWER_RIGHT).centroid().coordinates()
     )
-    slope = ((y(lowerCenter)).subtract(y(upperCenter))).divide(
-        (x(lowerCenter)).subtract(x(upperCenter))
+    slope = ((y(lower_center)).subtract(y(upper_center))).divide(
+        (x(lower_center)).subtract(x(upper_center))
     )
-    slopePerp = ee.Number(-1).divide(slope)
-    azimuthLeft = ee.Image(PI().divide(2).subtract((slopePerp).atan()))
-    return azimuthLeft.rename(["viewAz"])
+    slope_perp = ee.Number(-1).divide(slope)
+    azimuth_left = ee.Image(PI().divide(2).subtract(slope_perp.atan()))
+    return azimuth_left.rename(["viewAz"])
 
 
 def zenith(footprint):
-    leftLine = line_from_coords(footprint, UPPER_LEFT, LOWER_LEFT)
-    rightLine = line_from_coords(footprint, UPPER_RIGHT, LOWER_RIGHT)
-    leftDistance = ee.FeatureCollection(leftLine).distance(MAX_DISTANCE)
-    rightDistance = ee.FeatureCollection(rightLine).distance(MAX_DISTANCE)
-    viewZenith = (
-        rightDistance.multiply(ee.Number(MAX_SATELLITE_ZENITH * 2))
-        .divide(rightDistance.add(leftDistance))
+    left_line = line_from_coords(footprint, UPPER_LEFT, LOWER_LEFT)
+    right_line = line_from_coords(footprint, UPPER_RIGHT, LOWER_RIGHT)
+    left_distance = ee.FeatureCollection(left_line).distance(MAX_DISTANCE)
+    right_distance = ee.FeatureCollection(right_line).distance(MAX_DISTANCE)
+    view_zenith = (
+        right_distance.multiply(ee.Number(MAX_SATELLITE_ZENITH * 2))
+        .divide(right_distance.add(left_distance))
         .subtract(ee.Number(MAX_SATELLITE_ZENITH))
         .clip(ee.Geometry.Polygon(footprint))
         .rename(["viewZen"])
     )
-    return degToRad(viewZenith)
+    return deg_to_rad(view_zenith)

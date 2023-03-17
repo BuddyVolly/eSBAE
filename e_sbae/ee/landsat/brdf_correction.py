@@ -1,5 +1,5 @@
 from . import sun_angles, view_angles
-from ..util import *
+from e_sbae.helpers.ee import *
 
 
 def apply(image):
@@ -45,34 +45,35 @@ def _correct_band(image, band_name, kvol, kvol0, f_iso, f_geo, f_vol):
     return corr
 
 
-def _kvol(sunAz, sunZen, viewAz, viewZen):
+def _kvol(sun_az, sun_zen, view_az, view_zen):
     """Calculate kvol kernel.
     From Lucht et al. 2000
     Phase angle = cos(solar zenith) cos(view zenith) + sin(solar zenith) sin(view zenith) cos(relative azimuth)"""
-    relative_azimuth = sunAz.subtract(viewAz).rename(["relAz"])
-    pa1 = viewZen.cos().multiply(sunZen.cos())
-    pa2 = viewZen.sin().multiply(sunZen.sin()).multiply(relative_azimuth.cos())
+    relative_azimuth = sun_az.subtract(view_az).rename(["relAz"])
+    pa1 = view_zen.cos().multiply(sun_zen.cos())
+    pa2 = view_zen.sin().multiply(sun_zen.sin()).multiply(relative_azimuth.cos())
     phase_angle1 = pa1.add(pa2)
     phase_angle = phase_angle1.acos()
     p1 = ee.Image(PI().divide(2)).subtract(phase_angle)
     p2 = p1.multiply(phase_angle1)
     p3 = p2.add(phase_angle.sin())
-    p4 = sunZen.cos().add(viewZen.cos())
+    p4 = sun_zen.cos().add(view_zen.cos())
     p5 = ee.Image(PI().divide(4))
 
     kvol = p3.divide(p4).subtract(p5).rename(["kvol"])
 
-    viewZen0 = ee.Image(0)
-    pa10 = viewZen0.cos().multiply(sunZen.cos())
-    pa20 = viewZen0.sin().multiply(sunZen.sin()).multiply(relative_azimuth.cos())
+    view_zen0 = ee.Image(0)
+    pa10 = view_zen0.cos().multiply(sun_zen.cos())
+    pa20 = view_zen0.sin().multiply(sun_zen.sin()).multiply(relative_azimuth.cos())
     phase_angle10 = pa10.add(pa20)
     phase_angle0 = phase_angle10.acos()
     p10 = ee.Image(PI().divide(2)).subtract(phase_angle0)
     p20 = p10.multiply(phase_angle10)
     p30 = p20.add(phase_angle0.sin())
-    p40 = sunZen.cos().add(viewZen0.cos())
+    p40 = sun_zen.cos().add(view_zen0.cos())
     p50 = ee.Image(PI().divide(4))
 
     kvol0 = p30.divide(p40).subtract(p50).rename(["kvol0"])
 
-    return (kvol, kvol0)
+    return kvol, kvol0
+

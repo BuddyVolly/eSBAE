@@ -1,15 +1,12 @@
-import time
-
 import ee
 import pandas as pd
 import geopandas as gpd
-import numpy as np
 import requests
 from retrying import retry
 
 
 @retry(stop_max_attempt_number=3, wait_random_min=5000, wait_random_max=10000)
-def extract_time_series(imageCollection, points, config_dict):
+def extract_time_series(image_collection, points, config_dict):
 
     bands = config_dict["ts_params"]["bands"]
     ee_bands = ee.List(config_dict["ts_params"]["bands"])
@@ -18,12 +15,12 @@ def extract_time_series(imageCollection, points, config_dict):
 
     # mask lsat collection for grid cell
     cell = points.geometry().convexHull(100)
-    masked_coll = imageCollection.filterBounds(cell)
+    masked_coll = image_collection.filterBounds(cell)
     reducer = (
         ee.Reducer.first().setOutputs(bands) if len(bands) == 1 else ee.Reducer.first()
     )
 
-    # mapping function to extract NDVI time-series from each image
+    # mapping function to extract time-series from each image
     def mapOverImgColl(image):
 
         geom = image.geometry()
@@ -42,10 +39,11 @@ def extract_time_series(imageCollection, points, config_dict):
             collection=points.filterBounds(geom), reducer=reducer, scale=scale
         ).map(pixel_value_nan)
 
-    # apply mapping ufnciton over landsat collection and get the url of the returned FC
-    cell_fc = (
-        masked_coll.map(mapOverImgColl).flatten().filter(ee.Filter.neq(bands[0], -9999))
-    )
+    # apply mapping function over landsat collection
+    cell_fc = masked_coll.map(mapOverImgColl).flatten().filter(
+        ee.Filter.neq(bands[0], -9999)
+        )
+    # and get the url of the data
     url = cell_fc.getDownloadUrl("geojson")
 
     # Handle downloading the actual pixels.
@@ -56,7 +54,7 @@ def extract_time_series(imageCollection, points, config_dict):
     # write the FC to a geodataframe
     try:
         point_gdf = gpd.GeoDataFrame.from_features(r.json())
-    except:  # JSONDecodeError:
+    except: # JSONDecodeError:
         return None
 
     if len(point_gdf) > 0:
@@ -67,8 +65,9 @@ def extract_time_series(imageCollection, points, config_dict):
 
 def structure_ts_data(df, point_id_name, bands):
 
-    df.index = pd.DatetimeIndex(
-        pd.to_datetime(df.imageID.apply(lambda x: x.split("_")[-1]), format="%Y%m%d")
+    df.index = pd.DatetimeIndex(pd.to_datetime(df.imageID.apply(
+            lambda x: x.split("_")[-1]), format="%Y%m%d"
+        )
     )
     df["dates"] = df.imageID.apply(lambda x: x.split("_")[-1])
 
@@ -79,10 +78,11 @@ def structure_ts_data(df, point_id_name, bands):
         # read only orws of points and sort by date
         sub = df[df[point_id_name] == point].sort_index()
 
-        #### LANDSAT ONLY ###########
+        # LANDSAT ONLY ###########
         sub["pathrow"] = sub.imageID.apply(lambda x: x.split("_")[-2])
 
-        # if more than one path row combination covers the point, we select only the one with the most images
+        # if more than one path row combination covers the point,
+        # we select only the one with the most images
         if len(sub.pathrow.unique()) > 1:
             # set an initil length
             length = -1
@@ -90,15 +90,17 @@ def structure_ts_data(df, point_id_name, bands):
             for pathrow in sub.pathrow.unique():
                 # check length
                 l = len(sub[sub.pathrow == pathrow])
-                # compare ot previous length, and if higher reset pathrow and length variable
+                # compare ot previous length, and if higher reset
+                # pathrow and length variable
                 if l > length:
                     pr = pathrow
                     length = l
             # finally filter sub df for pathrow with most images
             sub = sub[sub.pathrow == pr]
-        #### LANDSAT ONLY ###########
+        # LANDSAT ONLY ###########
 
-        # still duplicates may appear between l9 and l8 that would make bfast crash, so we drop
+        # still duplicates may appear between l9 and l8 that
+        # would make bfast crash, so we drop
         sub = sub[~sub.index.duplicated(keep="first")]
 
         # fill ts dictionary

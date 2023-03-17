@@ -1,13 +1,15 @@
-import ee
 import json
 import time
-import pandas as pd
-import geopandas as gpd
+import uuid
 from pathlib import Path
 from datetime import timedelta
 
+import ee
+import pandas as pd
+import geopandas as gpd
+
 from .ee.extract_time_series import extract_time_series
-from .ee.util import processing_grid
+from .helpers.ee import processing_grid
 from .ee.landsat.landsat_collection import landsat_collection
 from .ee.ccdc import run_ccdc
 from .ee.landtrendr import run_landtrendr
@@ -41,27 +43,29 @@ def upload_tmp_asset(asset_root, fc, asset_name, create_folder=True):
     ee.data.createAsset({"type": "folder"}, f"{asset_root}/tmp_sbae")
 
     # export
-    print(" Exporting table of (missing) points as temporary Earth Engine asset.")
-    exportTask = ee.batch.Export.table.toAsset(
+    print(" Exporting table of (missing) points as temporary "
+          "Earth Engine asset.")
+    export_task = ee.batch.Export.table.toAsset(
         collection=fc,
         description=asset_name,
         assetId=f"{asset_root}/tmp_sbae/{asset_name}",
     )
-    exportTask.start()
+    export_task.start()
 
     finished = False
-    while finished == False:
+    while not finished:
 
         # check every 10 seconds
         time.sleep(10)
-        state = exportTask.status()["state"]
+        state = export_task.status()["state"]
 
         if state == "COMPLETED":
             finished = True
         elif state not in ["COMPLETED", "READY", "RUNNING"]:
             raise RuntimeError(
-                " ERROR: Upload of the temporary point asset to Earth Engine has failed. Please re-run the notebook.\n"
-                " NOTE that already processed data is not lost."
+                " ERROR: Upload of the temporary point asset to Earth Engine "
+                "has failed. Please re-run the notebook. "
+                "NOTE that already processed data is not lost."
             )
         else:
             finished = False
