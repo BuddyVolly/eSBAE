@@ -44,7 +44,7 @@ def add_indices(image):
         .int16()
     )
 
-    endmembers = {
+    end_members = {
         "gv": [0.0500, 0.0900, 0.0400, 0.6100, 0.3000, 0.1000],
         "shade": [0, 0, 0, 0, 0, 0],
         "npv": [0.1400, 0.1700, 0.2200, 0.3000, 0.5500, 0.3000],
@@ -55,11 +55,11 @@ def add_indices(image):
     unmixed_image = image4compu.unmix(
         **{
             "endmembers": [
-                endmembers["gv"],
-                endmembers["shade"],
-                endmembers["npv"],
-                endmembers["soil"],
-                endmembers["cloud"],
+                end_members["gv"],
+                end_members["shade"],
+                end_members["npv"],
+                end_members["soil"],
+                end_members["cloud"],
             ],
             "sumToOne": True,
             "nonNegative": True,
@@ -94,22 +94,22 @@ def add_indices(image):
     )
 
 
-def bitwiseExtract(value, fromBit, toBit=None):
-    if not toBit:
-        toBit = fromBit
-    maskSize = ee.Number(1).add(toBit).subtract(fromBit)
-    mask = ee.Number(1).leftShift(maskSize).subtract(1)
-    return value.rightShift(fromBit).bitwiseAnd(mask)
+def bitwise_extract(value, from_bit, to_bit=None):
+    if not to_bit:
+        to_bit = from_bit
+    mask_size = ee.Number(1).add(to_bit).subtract(from_bit)
+    mask = ee.Number(1).leftShift(mask_size).subtract(1)
+    return value.rightShift(from_bit).bitwiseAnd(mask)
 
 
-def cloudMaskLsatSR(image):
+def cloud_mask_lsat_sr(image):
     qa = image.select("QA_PIXEL")
-    cloudShadow = bitwiseExtract(qa, 4)
-    snow = bitwiseExtract(qa, 5)
-    cloud = bitwiseExtract(qa, 6).Not()
-    water = bitwiseExtract(qa, 7)
+    cloud_shadow = bitwise_extract(qa, 4)
+    snow = bitwise_extract(qa, 5)
+    cloud = bitwise_extract(qa, 6).Not()
+    water = bitwise_extract(qa, 7)
     return image.updateMask(
-        cloudShadow.Not()
+        cloud_shadow.Not()
         .And(snow.Not())
         .And(cloud.Not())
         # .And(water.Not())
@@ -124,13 +124,13 @@ def create_collection(collection, start, end, aoi, max_cc):
         .filter(ee.Filter.lt("CLOUD_COVER", max_cc))
     )
 
-    return coll.map(cloudMaskLsatSR)
+    return coll.map(cloud_mask_lsat_sr)
 
 
 def apply_scale_factors(image):
-    opticalBands = image.select("SR_B.").multiply(0.0000275).add(-0.2)
-    thermalBands = image.select("ST_B.*").multiply(0.00341802).add(149.0)
-    return image.addBands(opticalBands, None, True).addBands(thermalBands, None, True)
+    optical_bands = image.select("SR_B.").multiply(0.0000275).add(-0.2)
+    thermal_bands = image.select("ST_B.*").multiply(0.00341802).add(149.0)
+    return image.addBands(optical_bands, None, True).addBands(thermal_bands, None, True)
 
 
 def landsat_collection(

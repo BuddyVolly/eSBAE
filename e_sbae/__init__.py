@@ -1,5 +1,7 @@
 from .ee.extract_time_series import extract_time_series
-from .ee.util import processing_grid, get_random_point, get_center_point, set_id
+from .helpers.ee import processing_grid, get_random_point, get_center_point, set_id, export_to_ee
+from .helpers.python import save_gdf_locally
+
 from .ee.landsat.landsat_collection import landsat_collection
 from .ee.ccdc import run_ccdc
 from .ee.landtrendr import run_landtrendr
@@ -16,13 +18,7 @@ from .ts_analysis.helpers import (
     remove_outliers,
     plot_stats_per_class,
 )
-from .sampling.grid import (
-    squared_grid,
-    hexagonal_grid,
-    upload_to_ee,
-    save_locally,
-    plot_samples,
-)
+from .sampling.grid import squared_grid, hexagonal_grid, plot_samples
 
 from .get_change_data import get_change_data
 

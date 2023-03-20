@@ -16,14 +16,14 @@ def apply_tc(image):
     )
 
     # Make an Array Image, with a 1-D Array per pixel.
-    opticalBands = ["blue", "green", "red", "nir", "swir1", "swir2"]
-    arrayImage = image.select(opticalBands).divide(10000).toArray().toArray(1)
+    optical_bands = ["blue", "green", "red", "nir", "swir1", "swir2"]
+    array_image = image.select(optical_bands).divide(10000).toArray().toArray(1)
 
     # apply TC coefficients
-    componentsImage = (
+    components_image = (
         (
             ee.Image(coefficients)
-            .matrixMultiply(arrayImage)
+            .matrixMultiply(array_image)
             # Get rid of the extra dimensions.
             .arrayProject([0])
             .arrayFlatten(
@@ -34,4 +34,4 @@ def apply_tc(image):
         .int16()
     )
 
-    return image.addBands(componentsImage)
+    return image.addBands(components_image)
