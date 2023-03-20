@@ -30,7 +30,7 @@ authors = [
 dependencies = [
     # web
     "requests",
-    "retry",
+    "retrying",
     # geospatial libs
     "earthengine-api",
     #"git+https://github.com/BuddyVolly/eeHelpers",
