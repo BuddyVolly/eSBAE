@@ -1,5 +1,5 @@
 from . import sun_angles, view_angles
-from e_sbae.helpers.ee import *
+from esbae.helpers.ee import *
 
 
 def apply(image):

@@ -1,5 +1,5 @@
 import ee
-from e_sbae.helpers.ee import *
+from esbae.helpers.ee import *
 
 
 def create(date, footprint):

@@ -510,6 +510,13 @@ def extract_time_series(image_collection, points, config_dict, identifier=None, 
         else:
             points_fc = points
 
+        #if bounds_reduce:
+        #    points_fc = points_fc.map(
+        #        lambda x: ee.Feature(
+        #            x.geometry().buffer(scale/2).bounds()
+        #        ).copyProperties(x, x.propertyNames())
+        #    )
+
         # mask lsat collection for grid cell
         cell = points_fc.geometry().convexHull(100)
         masked_coll = image_collection.filterBounds(cell)
@@ -531,9 +538,10 @@ def extract_time_series(image_collection, points, config_dict, identifier=None, 
                 return feature.set(properties.combine({"imageID": image.id()}))
 
             return image.reduceRegions(
+                #collection=points_fc.filter(ee.Filter.isContained(".geo", image.geometry()))
                 collection=points_fc.filterBounds(image.geometry()),
                 reducer=reducer,
-                scale=scale
+                scale=scale   # 30 for bounds_reduce
             ).map(pixel_value_nan)
 
         # apply mapping function over landsat collection
