@@ -30,7 +30,7 @@ authors = [
 dependencies = [
     # web
     "requests",
-    "retry",
+    "retrying",
     # geospatial libs
     "earthengine-api",
     #"git+https://github.com/BuddyVolly/eeHelpers",
@@ -49,9 +49,10 @@ dependencies = [
     "seaborn",
     "tensorflow>=2.7.0",
     "protobuf==3.19.6",
+    "godale",
     # time-series
     "nrt",
-    #"git+https://github.com/12rambau/bfast"
+    "bfast @ git+https://github.com/12rambau/bfast"
 ]
 
 [project.license]
@@ -72,10 +73,8 @@ doc = ["sphinx", "pydata-sphinx-theme==0.13.0rc3", "sphinx-design"]
 [tool.setuptools]
 include-package-data = true
 license-files = ["LICENSE"]
-#packages = ["e_sbae"]
 
 [tool.setuptools.packages.find]
-where = ["e_sbae"]  # list of folders that contain the packages (["."] by default)
 include = ["e_sbae*"]  # package names should match these glob patterns (["*"] by default)
 
 [tool.ruff]
@@ -94,7 +93,7 @@ convention = "google"
 "setup.py" = ["D100"] # nothing to see there
 
 [tool.coverage.run]
-source = ["sphinxcontrib.icon"]
+source = ["e_sbae"]
 
 [tool.mypy]
 scripts_are_modules = true
